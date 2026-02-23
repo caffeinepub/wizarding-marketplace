@@ -1,0 +1,107 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Add user profile pages for sellers to showcase their collections",
+  "requirements": [
+    {
+      "id": "REQ-8",
+      "summary": "Create a user profile page component that displays seller information including name, email, seller status, and member since date",
+      "acceptanceCriteria": [
+        "Profile page displays user's name prominently",
+        "Shows email if the user provided one during registration",
+        "Displays seller badge or indicator if user is a seller",
+        "Shows account creation date in a readable format",
+        "Page is accessible via route like /profile/:userId"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/ProfilePage.tsx",
+          "operation": "create",
+          "description": "Create ProfilePage component that displays user profile information. Fetch profile data using the getPublicProfile backend method via a React Query hook. Display user's name prominently, show email if provided, include a seller badge if isSeller is true, and format the member since date from the profile data. Include loading and error states. The page accepts userId as a route parameter."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Register the ProfilePage route in the router configuration with path '/profile/:userId' to enable navigation to user profile pages."
+        }
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "summary": "Display all active listings created by the profile owner in a grid layout on their profile page",
+      "acceptanceCriteria": [
+        "Profile page shows a grid of all items listed by that seller",
+        "Each item displays using the existing ItemCard component",
+        "Only active (non-deleted) listings are shown",
+        "Shows empty state message if seller has no listings",
+        "Items are clickable and navigate to item detail page"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/ProfilePage.tsx",
+          "operation": "modify",
+          "description": "Add a listings grid section below the profile information that maps over the activeListings array from the PublicProfile response. Render each listing using the existing ItemCard component. Display an empty state message when activeListings array is empty. Use the same grid layout classes as BrowsePage for consistency."
+        }
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "summary": "Add navigation links to seller profiles from item cards and item detail pages by making seller name clickable",
+      "acceptanceCriteria": [
+        "Seller name on ItemCard component links to seller's profile page",
+        "Seller info on ItemDetailPage links to seller's profile page",
+        "Links use the seller's principal ID in the route",
+        "Hover state indicates the name is clickable",
+        "Navigation works correctly from all pages"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ItemCard.tsx",
+          "operation": "modify",
+          "description": "Wrap the seller name display with a Link component navigating to /profile/:userId using the item.seller principal as userId. Add hover styles (underline or color change) to indicate clickability. Prevent event propagation to avoid triggering the card's navigation when clicking the seller name."
+        },
+        {
+          "path": "frontend/src/pages/ItemDetailPage.tsx",
+          "operation": "modify",
+          "description": "Wrap the seller information display with a Link component navigating to /profile/:userId using the item.seller principal as userId. Add hover styles to indicate the seller name is clickable. Ensure the link works correctly alongside the ContactSellerButton."
+        }
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "summary": "Create a React Query hook for fetching user profile data with their listings",
+      "acceptanceCriteria": [
+        "Hook added to useQueries.ts following existing patterns",
+        "Handles loading, error, and success states",
+        "Profile page shows loading spinner while fetching",
+        "Displays error message if profile cannot be loaded",
+        "Data refreshes appropriately when navigating between profiles"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add useGetPublicProfile hook that accepts userId (Principal) as a parameter and calls actor.getPublicProfile(userId). Use useQuery with queryKey ['publicProfile', userId.toString()] to enable per-user caching. Enable the query only when actor is available. Return loading, error, and data states following the existing hook patterns in the file."
+        }
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "summary": "Add a 'View Profile' link in the Layout header navigation when user is authenticated",
+      "acceptanceCriteria": [
+        "Link appears in header navigation next to existing links",
+        "Only visible when user is logged in",
+        "Navigates to the authenticated user's profile page",
+        "Uses the current user's principal ID in the route",
+        "Maintains wizarding theme styling consistent with other nav links"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/Layout.tsx",
+          "operation": "modify",
+          "description": "Add a 'View Profile' navigation link in the header navigation between existing links. Make it visible only when isAuthenticated is true. Use identity.getPrincipal().toString() to construct the profile route path /profile/:userId. Style the link consistently with other navigation items using the same Cinzel font and hover effects."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-create-a-user-profile-page-component-that-displays-a-seller-s-information-including-their-name-email-if-provided-seller-status-and-member-since-date",
+      "featureTitle": "Create a user profile page component that displays a seller's information including their name, email (if provided), seller status, and member since date",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/pages/ProfilePage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-8"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-display-all-active-listings-created-by-the-profile-owner-on-their-profile-page-in-a-grid-layout-similar-to-the-browse-page",
+      "featureTitle": "Display all active listings created by the profile owner on their profile page in a grid layout similar to the browse page",
+      "files": [
+        "frontend/src/pages/ProfilePage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-9"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-navigation-links-to-seller-profiles-from-item-cards-and-item-detail-pages-by-making-the-seller-name-clickable",
+      "featureTitle": "Add navigation links to seller profiles from item cards and item detail pages by making the seller name clickable",
+      "files": [
+        "frontend/src/components/ItemCard.tsx",
+        "frontend/src/pages/ItemDetailPage.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-11"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-a-react-query-hook-for-fetching-user-profile-data-with-their-listings-and-integrate-it-into-the-profile-page-component",
+      "featureTitle": "Create a React Query hook for fetching user profile data with their listings and integrate it into the profile page component",
+      "files": [
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-12"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-view-profile-link-or-button-in-the-layout-header-navigation-when-user-is-authenticated-that-navigates-to-their-own-profile-page",
+      "featureTitle": "Add a 'View Profile' link or button in the Layout header navigation when user is authenticated that navigates to their own profile page",
+      "files": [
+        "frontend/src/components/Layout.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-13"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

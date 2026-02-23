@@ -1,0 +1,142 @@
+{
+  "kind": "build_request",
+  "title": "Add user profile pages for sellers to showcase their collections",
+  "projectName": "Wizarding Marketplace",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-8",
+      "text": "Create a user profile page component that displays a seller's information including their name, email (if provided), seller status, and member since date",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-user-yes"
+        ],
+        "quotes": [
+          "sellers can showcase their collections"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Profile page displays user's name prominently",
+        "Shows email if the user provided one during registration",
+        "Displays seller badge or indicator if user is a seller",
+        "Shows account creation date in a readable format",
+        "Page is accessible via route like /profile/:userId"
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "text": "Display all active listings created by the profile owner on their profile page in a grid layout similar to the browse page",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-user-yes"
+        ],
+        "quotes": [
+          "showcase their collections"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Profile page shows a grid of all items listed by that seller",
+        "Each item displays using the existing ItemCard component",
+        "Only active (non-deleted) listings are shown",
+        "Shows empty state message if seller has no listings",
+        "Items are clickable and navigate to item detail page"
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "text": "Add backend query function to retrieve a user's public profile information by principal ID including their profile data and all their active listings",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-user-yes"
+        ],
+        "quotes": [
+          "sellers can showcase their collections"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Function accepts a Principal parameter for the target user",
+        "Returns user profile data (name, email, isSeller, createdAt)",
+        "Returns array of all active listings created by that user",
+        "Function is callable by any authenticated user (public profile view)",
+        "Returns appropriate error if user profile does not exist"
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "text": "Add navigation links to seller profiles from item cards and item detail pages by making the seller name clickable",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-user-yes"
+        ],
+        "quotes": [
+          "sellers can showcase their collections"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Seller name on ItemCard component links to seller's profile page",
+        "Seller info on ItemDetailPage links to seller's profile page",
+        "Links use the seller's principal ID in the route",
+        "Hover state indicates the name is clickable",
+        "Navigation works correctly from all pages"
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "text": "Create a React Query hook for fetching user profile data with their listings and integrate it into the profile page component",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-user-yes"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Hook added to useQueries.ts following existing patterns",
+        "Handles loading, error, and success states",
+        "Profile page shows loading spinner while fetching",
+        "Displays error message if profile cannot be loaded",
+        "Data refreshes appropriately when navigating between profiles"
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "text": "Add a 'View Profile' link or button in the Layout header navigation when user is authenticated that navigates to their own profile page",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-user-yes"
+        ],
+        "quotes": [
+          "User profile pages"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Link appears in header navigation next to existing links",
+        "Only visible when user is logged in",
+        "Navigates to the authenticated user's profile page",
+        "Uses the current user's principal ID in the route",
+        "Maintains wizarding theme styling consistent with other nav links"
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not modify existing authentication system or Internet Identity integration",
+    "Maintain single-actor backend architecture",
+    "Keep existing messaging and cart functionality unchanged",
+    "Profile pages must be publicly viewable by any authenticated user"
+  ],
+  "nonGoals": [
+    "Private profiles or visibility settings",
+    "Profile editing or settings page (separate from ProfileSetupModal)",
+    "Following or friending functionality",
+    "User ratings or reviews",
+    "Profile statistics or analytics"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

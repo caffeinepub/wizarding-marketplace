@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 5,
+  "summary": "A second-hand marketplace app for Harry Potter and wizarding world items where users can buy and sell magical collectibles",
+  "architectural_notes": [
+    "Marketplace app requiring user authentication",
+    "Image upload capability needed for item listings",
+    "Payment processing integration required",
+    "User-to-user messaging system"
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-create-user-authentication-system-using-internet-identity-for-buyers-and-sellers-to-securely-log-in",
+      "title": "Create user authentication system using Internet Identity for buyers and sellers to securely log in",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-item-listing-creation-system-where-sellers-can-add-harry-potter-and-wizarding-world-items-with-title-description-price-condition-and-category",
+      "title": "Implement item listing creation system where sellers can add Harry Potter and wizarding world items with title, description, price, condition, and category",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-build-marketplace-browse-and-search-interface-displaying-all-available-harry-potter-and-wizarding-items-with-filtering-by-category-price-range-and-condition",
+      "title": "Build marketplace browse and search interface displaying all available Harry Potter and wizarding items with filtering by category, price range, and condition",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-shopping-cart-system-where-buyers-can-add-multiple-items-view-cart-contents-adjust-quantities-and-proceed-to-checkout",
+      "title": "Create shopping cart system where buyers can add multiple items, view cart contents, adjust quantities, and proceed to checkout",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-messaging-system-allowing-buyers-and-sellers-to-communicate-about-listings-ask-questions-and-coordinate-transactions",
+      "title": "Implement messaging system allowing buyers and sellers to communicate about listings, ask questions, and coordinate transactions",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-design-a-magical-wizarding-themed-visual-style-with-enchanted-aesthetics-including-mystical-colors-deep-purples-emerald-greens-gold-accents-parchment-inspired-textures-and-elegant-typography-that-evokes-the-harry-potter-universe-throughout-the-entire-application",
+      "title": "Design a magical, wizarding-themed visual style with enchanted aesthetics including mystical colors (deep purples, emerald greens, gold accents), parchment-inspired textures, and elegant typography that evokes the Harry Potter universe throughout the entire application",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-generated-marketplace-hero-banner-wizarding-shop-icon-and-category-placeholder-images-as-static-assets-in-frontend-public-assets-generated",
+      "title": "Display generated marketplace hero banner, wizarding shop icon, and category placeholder images as static assets in frontend/public/assets/generated",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-user-profile-page-component-that-displays-a-seller-s-information-including-their-name-email-if-provided-seller-status-and-member-since-date",
+      "title": "Create a user profile page component that displays a seller's information including their name, email (if provided), seller status, and member since date",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-all-active-listings-created-by-the-profile-owner-on-their-profile-page-in-a-grid-layout-similar-to-the-browse-page",
+      "title": "Display all active listings created by the profile owner on their profile page in a grid layout similar to the browse page",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-navigation-links-to-seller-profiles-from-item-cards-and-item-detail-pages-by-making-the-seller-name-clickable",
+      "title": "Add navigation links to seller profiles from item cards and item detail pages by making the seller name clickable",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-react-query-hook-for-fetching-user-profile-data-with-their-listings-and-integrate-it-into-the-profile-page-component",
+      "title": "Create a React Query hook for fetching user profile data with their listings and integrate it into the profile page component",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-view-profile-link-or-button-in-the-layout-header-navigation-when-user-is-authenticated-that-navigates-to-their-own-profile-page",
+      "title": "Add a 'View Profile' link or button in the Layout header navigation when user is authenticated that navigates to their own profile page",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "User accounts and authentication system",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Item listing creation with photos, descriptions, and pricing",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Browse and search marketplace for Harry Potter/wizarding items",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Shopping cart and checkout system",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Messaging system between buyers and sellers",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "User profile pages where sellers can showcase their collections",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Add backend query function to retrieve a user's public profile information by principal ID including their profile data and all their active listings",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Harry Potter Marketplace",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}
