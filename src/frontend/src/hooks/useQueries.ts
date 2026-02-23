@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useActor } from './useActor';
-import type { UserProfile, Item, ItemId, Category, ItemCondition, Price, ShoppingCartView, Message, UserId, PublicProfile } from '../backend';
-import { ExternalBlob } from '../backend';
+import type { UserProfile, UserId, PublicProfile, Wand, Friendship } from '../backend';
 import { Principal } from '@dfinity/principal';
+import { toast } from 'sonner';
 
 // User Profile Hooks
 export function useGetCallerUserProfile() {
@@ -36,6 +36,11 @@ export function useSaveCallerUserProfile() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['currentUserProfile'] });
+      queryClient.invalidateQueries({ queryKey: ['publicProfile'] });
+      toast.success('Profile updated successfully');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Failed to update profile');
     },
   });
 }
@@ -53,258 +58,186 @@ export function useGetPublicProfile(userId: string | undefined) {
   });
 }
 
-// Item Listing Hooks
-export function useCreateItemListing() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({
-      title,
-      description,
-      price,
-      condition,
-      category,
-      image,
-    }: {
-      title: string;
-      description: string;
-      price: Price;
-      condition: ItemCondition;
-      category: Category;
-      image: ExternalBlob | null;
-    }) => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.createItemListing(title, description, price, condition, category, image);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['items'] });
-      queryClient.invalidateQueries({ queryKey: ['myListings'] });
-      queryClient.invalidateQueries({ queryKey: ['publicProfile'] });
-    },
-  });
-}
-
-export function useUpdateItemListing() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({
-      itemId,
-      title,
-      description,
-      price,
-      condition,
-      category,
-      image,
-    }: {
-      itemId: ItemId;
-      title: string;
-      description: string;
-      price: Price;
-      condition: ItemCondition;
-      category: Category;
-      image: ExternalBlob | null;
-    }) => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.updateItemListing(itemId, title, description, price, condition, category, image);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['items'] });
-      queryClient.invalidateQueries({ queryKey: ['myListings'] });
-      queryClient.invalidateQueries({ queryKey: ['publicProfile'] });
-    },
-  });
-}
-
-export function useDeleteItemListing() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (itemId: ItemId) => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.deleteItemListing(itemId);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['items'] });
-      queryClient.invalidateQueries({ queryKey: ['myListings'] });
-      queryClient.invalidateQueries({ queryKey: ['publicProfile'] });
-    },
-  });
-}
-
-export function useGetItem(itemId: ItemId | undefined) {
+// Wand Management Hooks
+export function useGetWands() {
   const { actor, isFetching } = useActor();
 
-  return useQuery<Item | null>({
-    queryKey: ['item', itemId?.toString()],
-    queryFn: async () => {
-      if (!actor || !itemId) return null;
-      return actor.getItem(itemId);
-    },
-    enabled: !!actor && !isFetching && itemId !== undefined,
-  });
-}
-
-export function useBrowseItems() {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<Item[]>({
-    queryKey: ['items'],
+  return useQuery<Wand[]>({
+    queryKey: ['wands'],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.browseItems();
+      return actor.getWands();
     },
     enabled: !!actor && !isFetching,
   });
 }
 
-export function useGetMyListings() {
+export function useGetWand(wandId: string | undefined) {
   const { actor, isFetching } = useActor();
 
-  return useQuery<Item[]>({
-    queryKey: ['myListings'],
+  return useQuery<Wand | null>({
+    queryKey: ['wand', wandId],
+    queryFn: async () => {
+      if (!actor || !wandId) return null;
+      return actor.getWand(wandId);
+    },
+    enabled: !!actor && !isFetching && !!wandId,
+  });
+}
+
+export function useCreateWand() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (name: string) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.createWand(name);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['wands'] });
+      toast.success('Wand created successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Failed to create wand');
+    },
+  });
+}
+
+export function useUpdateWand() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ wandId, name }: { wandId: string; name: string }) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.updateWand(wandId, name);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['wands'] });
+      queryClient.invalidateQueries({ queryKey: ['wand'] });
+      toast.success('Wand updated successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Failed to update wand');
+    },
+  });
+}
+
+export function useDeleteWand() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (wandId: string) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.deleteWand(wandId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['wands'] });
+      toast.success('Wand deleted successfully!');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Failed to delete wand');
+    },
+  });
+}
+
+// Friendship Hooks
+export function useGetConfirmedFriends() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<UserId[]>({
+    queryKey: ['confirmedFriends'],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.getMyListings();
+      return actor.getConfirmedFriends();
     },
     enabled: !!actor && !isFetching,
   });
 }
 
-// Shopping Cart Hooks
-export function useAddToCart() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ itemId, quantity }: { itemId: ItemId; quantity: bigint }) => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.addToCart(itemId, quantity);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
-    },
-  });
-}
-
-export function useRemoveFromCart() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (itemId: ItemId) => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.removeFromCart(itemId);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
-    },
-  });
-}
-
-export function useUpdateCartItem() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ itemId, quantity }: { itemId: ItemId; quantity: bigint }) => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.updateCartItem(itemId, quantity);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
-    },
-  });
-}
-
-export function useViewCart() {
+export function useGetPendingFriendRequests() {
   const { actor, isFetching } = useActor();
 
-  return useQuery<ShoppingCartView>({
-    queryKey: ['cart'],
-    queryFn: async () => {
-      if (!actor) return { items: [] };
-      try {
-        return await actor.viewCart();
-      } catch (error) {
-        // Cart not found for new users
-        return { items: [] };
-      }
-    },
-    enabled: !!actor && !isFetching,
-  });
-}
-
-export function useClearCart() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async () => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.clearCart();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
-    },
-  });
-}
-
-// Messaging Hooks
-export function useSendMessage() {
-  const { actor } = useActor();
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({ to, content }: { to: UserId; content: string }) => {
-      if (!actor) throw new Error('Actor not available');
-      return actor.sendMessage(to, content);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['messages'] });
-      queryClient.invalidateQueries({ queryKey: ['conversation'] });
-    },
-  });
-}
-
-export function useGetMessages() {
-  const { actor, isFetching } = useActor();
-
-  return useQuery<Message[]>({
-    queryKey: ['messages'],
+  return useQuery<Friendship[]>({
+    queryKey: ['pendingFriendRequests'],
     queryFn: async () => {
       if (!actor) return [];
-      return actor.getMessages();
+      return actor.getPendingFriendRequests();
     },
     enabled: !!actor && !isFetching,
   });
 }
 
-export function useGetConversation(otherUser: string | undefined) {
-  const { actor, isFetching } = useActor();
+export function useSendFriendRequest() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
 
-  return useQuery<Message[]>({
-    queryKey: ['conversation', otherUser],
-    queryFn: async () => {
-      if (!actor || !otherUser) return [];
-      return actor.getConversation(Principal.fromText(otherUser));
+  return useMutation({
+    mutationFn: async (friendId: UserId) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.sendFriendRequest(friendId);
     },
-    enabled: !!actor && !isFetching && !!otherUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['confirmedFriends'] });
+      queryClient.invalidateQueries({ queryKey: ['pendingFriendRequests'] });
+      toast.success('Friend request sent!');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Failed to send friend request');
+    },
   });
 }
 
-export function useGetUserProfile(userId: string | undefined) {
+export function useAcceptFriendRequest() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (requesterId: UserId) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.acceptFriendRequest(requesterId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['confirmedFriends'] });
+      queryClient.invalidateQueries({ queryKey: ['pendingFriendRequests'] });
+      toast.success('Friend request accepted!');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Failed to accept friend request');
+    },
+  });
+}
+
+export function useRejectFriendRequest() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (requesterId: UserId) => {
+      if (!actor) throw new Error('Actor not available');
+      return actor.rejectFriendRequest(requesterId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['pendingFriendRequests'] });
+      toast.success('Friend request rejected');
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Failed to reject friend request');
+    },
+  });
+}
+
+export function useGetFriendWands(friendId: string | undefined) {
   const { actor, isFetching } = useActor();
 
-  return useQuery<UserProfile | null>({
-    queryKey: ['userProfile', userId],
+  return useQuery<Wand[]>({
+    queryKey: ['friendWands', friendId],
     queryFn: async () => {
-      if (!actor || !userId) return null;
-      return actor.getUserProfile(Principal.fromText(userId));
+      if (!actor || !friendId) return [];
+      return actor.getFriendWands(Principal.fromText(friendId));
     },
-    enabled: !!actor && !isFetching && !!userId,
+    enabled: !!actor && !isFetching && !!friendId,
   });
 }

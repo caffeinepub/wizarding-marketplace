@@ -1,105 +1,150 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add user profile pages for sellers to showcase their collections",
+  "title": "Wand Collector Frontend Implementation",
   "requirements": [
     {
-      "id": "REQ-8",
-      "summary": "Create a user profile page component that displays seller information including name, email, seller status, and member since date",
+      "id": "REQ-30",
+      "summary": "Create MyWandsPage component displaying authenticated user's wand collection with count, list, and CRUD operations",
       "acceptanceCriteria": [
-        "Profile page displays user's name prominently",
-        "Shows email if the user provided one during registration",
-        "Displays seller badge or indicator if user is a seller",
-        "Shows account creation date in a readable format",
-        "Page is accessible via route like /profile/:userId"
+        "Page displays total wand count prominently",
+        "Each wand is displayed in a card or list item showing its name",
+        "Add Wand button opens a form or modal to create a new wand",
+        "Each wand has edit and delete buttons",
+        "Empty state message displayed when user has no wands",
+        "Uses React Query hooks for data fetching and mutations"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/ProfilePage.tsx",
+          "path": "frontend/src/pages/MyWandsPage.tsx",
           "operation": "create",
-          "description": "Create ProfilePage component that displays user profile information. Fetch profile data using the getPublicProfile backend method via a React Query hook. Display user's name prominently, show email if provided, include a seller badge if isSeller is true, and format the member since date from the profile data. Include loading and error states. The page accepts userId as a route parameter."
-        },
-        {
-          "path": "frontend/src/App.tsx",
-          "operation": "modify",
-          "description": "Register the ProfilePage route in the router configuration with path '/profile/:userId' to enable navigation to user profile pages."
+          "description": "Create page component that fetches and displays the user's wand collection using useGetWands hook. Display wand count at the top, show wands in a grid or list with name and creation date, provide Add Wand button that toggles AddWandForm visibility, and include edit/delete buttons for each wand. Show empty state when no wands exist. Use authorization component to ensure user is authenticated before accessing data. Include hero banner section at top using the generated image at frontend/public/assets/generated/wand-hero.dim_1200x400.png with mystical glow effects."
         }
       ]
     },
     {
-      "id": "REQ-9",
-      "summary": "Display all active listings created by the profile owner in a grid layout on their profile page",
+      "id": "REQ-31",
+      "summary": "Create AddWandForm component with text input for wand name and submit functionality",
       "acceptanceCriteria": [
-        "Profile page shows a grid of all items listed by that seller",
-        "Each item displays using the existing ItemCard component",
-        "Only active (non-deleted) listings are shown",
-        "Shows empty state message if seller has no listings",
-        "Items are clickable and navigate to item detail page"
+        "Form includes a text input for wand name with validation",
+        "Submit button triggers addWand mutation",
+        "Success toast displayed after wand is created",
+        "Form resets after successful submission",
+        "Loading state shown during submission"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/pages/ProfilePage.tsx",
-          "operation": "modify",
-          "description": "Add a listings grid section below the profile information that maps over the activeListings array from the PublicProfile response. Render each listing using the existing ItemCard component. Display an empty state message when activeListings array is empty. Use the same grid layout classes as BrowsePage for consistency."
+          "path": "frontend/src/components/AddWandForm.tsx",
+          "operation": "create",
+          "description": "Create form component with controlled text input for wand name (required, min length validation). On submit, call useCreateWand mutation with the name. Show loading state on submit button during mutation. Display success toast on completion, reset form inputs, and close/hide form. Handle validation errors gracefully. Style form with wand-themed aesthetics using dark wood backgrounds, starlight borders, and elegant serif typography for labels."
         }
       ]
     },
     {
-      "id": "REQ-11",
-      "summary": "Add navigation links to seller profiles from item cards and item detail pages by making seller name clickable",
+      "id": "REQ-32",
+      "summary": "Create FriendsPage component displaying friends list, pending requests, and friend request functionality",
       "acceptanceCriteria": [
-        "Seller name on ItemCard component links to seller's profile page",
-        "Seller info on ItemDetailPage links to seller's profile page",
-        "Links use the seller's principal ID in the route",
-        "Hover state indicates the name is clickable",
-        "Navigation works correctly from all pages"
+        "Page shows list of confirmed friends with their names and profile pictures",
+        "Pending friend requests section shows incoming requests with accept/reject buttons",
+        "Search or input field to find users and send friend requests",
+        "Each friend entry is clickable to view their wand collection",
+        "Uses React Query hooks for fetching friends and pending requests"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/ItemCard.tsx",
-          "operation": "modify",
-          "description": "Wrap the seller name display with a Link component navigating to /profile/:userId using the item.seller principal as userId. Add hover styles (underline or color change) to indicate clickability. Prevent event propagation to avoid triggering the card's navigation when clicking the seller name."
-        },
-        {
-          "path": "frontend/src/pages/ItemDetailPage.tsx",
-          "operation": "modify",
-          "description": "Wrap the seller information display with a Link component navigating to /profile/:userId using the item.seller principal as userId. Add hover styles to indicate the seller name is clickable. Ensure the link works correctly alongside the ContactSellerButton."
+          "path": "frontend/src/pages/FriendsPage.tsx",
+          "operation": "create",
+          "description": "Create page component that displays confirmed friends using useGetConfirmedFriends hook and pending requests using useGetPendingFriendRequests hook. Show friends as clickable cards with UserAvatar and name that link to their wand collection page. Display pending requests section with accept/reject buttons using useAcceptFriendRequest and useRejectFriendRequest mutations. Include input field for entering a friend's Principal ID and send button using useSendFriendRequest mutation. Use authorization component to ensure user is authenticated. Apply wand-themed styling to friend cards and pending requests section with oak/ebony backgrounds and starlight accents."
         }
       ]
     },
     {
-      "id": "REQ-12",
-      "summary": "Create a React Query hook for fetching user profile data with their listings",
+      "id": "REQ-33",
+      "summary": "Create FriendWandsPage component displaying a friend's wand collection with count and list",
       "acceptanceCriteria": [
-        "Hook added to useQueries.ts following existing patterns",
-        "Handles loading, error, and success states",
-        "Profile page shows loading spinner while fetching",
-        "Displays error message if profile cannot be loaded",
-        "Data refreshes appropriately when navigating between profiles"
+        "Page displays friend's name and total wand count",
+        "Shows list of friend's wands with names",
+        "Back button or link to return to friends list",
+        "Uses React Query hook to fetch friend's wands",
+        "Shows message if friend has no wands"
       ],
       "file_operations": [
         {
-          "path": "frontend/src/hooks/useQueries.ts",
-          "operation": "modify",
-          "description": "Add useGetPublicProfile hook that accepts userId (Principal) as a parameter and calls actor.getPublicProfile(userId). Use useQuery with queryKey ['publicProfile', userId.toString()] to enable per-user caching. Enable the query only when actor is available. Return loading, error, and data states following the existing hook patterns in the file."
+          "path": "frontend/src/pages/FriendWandsPage.tsx",
+          "operation": "create",
+          "description": "Create page component that extracts friendId from route params and fetches that friend's wands using useGetFriendWands hook. Display friend's profile (name and avatar) using useGetPublicProfile hook, show wand count, and list wands in a grid or list. Include back button linking to /friends page. Show empty state message if friend has no wands. Use authorization component to ensure user is authenticated. Apply wand-themed styling consistent with MyWandsPage using oak brown backgrounds for wand cards and starlight accents."
         }
       ]
     },
     {
-      "id": "REQ-13",
-      "summary": "Add a 'View Profile' link in the Layout header navigation when user is authenticated",
+      "id": "REQ-34",
+      "summary": "Update Layout component navigation to include My Wands and Friends links",
       "acceptanceCriteria": [
-        "Link appears in header navigation next to existing links",
-        "Only visible when user is logged in",
-        "Navigates to the authenticated user's profile page",
-        "Uses the current user's principal ID in the route",
-        "Maintains wizarding theme styling consistent with other nav links"
+        "Navigation includes 'My Wands' link routing to MyWandsPage",
+        "Navigation includes 'Friends' link routing to FriendsPage",
+        "Links are visible when user is authenticated",
+        "Navigation maintains consistent styling with existing links"
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/Layout.tsx",
           "operation": "modify",
-          "description": "Add a 'View Profile' navigation link in the header navigation between existing links. Make it visible only when isAuthenticated is true. Use identity.getPrincipal().toString() to construct the profile route path /profile/:userId. Style the link consistently with other navigation items using the same Cinzel font and hover effects."
+          "description": "Add 'My Wands' and 'Friends' navigation links in the header navigation section alongside existing links. Links should route to /my-wands and /friends respectively. Only show these links when isAuthenticated is true. Apply consistent styling matching existing navigation items. Replace existing logo with wand logo image at frontend/public/assets/generated/wand-logo.dim_256x256.png. Update header styling to use wand-themed colors (dark wood background with starlight text) and mystical aesthetic."
+        }
+      ]
+    },
+    {
+      "id": "REQ-35",
+      "summary": "Create React Query hooks for all wand and friend operations",
+      "acceptanceCriteria": [
+        "All hooks use useActor to get backend actor instance",
+        "Mutations invalidate relevant queries on success",
+        "Hooks handle loading and error states",
+        "Success/error toasts displayed for mutations"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useQueries.ts",
+          "operation": "modify",
+          "description": "Add React Query hooks for wand operations: useGetWands (query returning Array<Wand>), useGetWand (query with wandId param), useCreateWand (mutation calling createWand), useUpdateWand (mutation calling updateWand), useDeleteWand (mutation calling deleteWand). Add hooks for friend operations: useGetConfirmedFriends (query), useGetPendingFriendRequests (query), useSendFriendRequest (mutation), useAcceptFriendRequest (mutation), useRejectFriendRequest (mutation), useGetFriendWands (query with friendId param). All mutations should invalidate relevant queries on success and display toast notifications. All queries should be enabled only when actor is available."
+        }
+      ]
+    },
+    {
+      "id": "REQ-36",
+      "summary": "Update App.tsx to include routes for MyWandsPage, FriendsPage, and FriendWandsPage",
+      "acceptanceCriteria": [
+        "Routes are added to TanStack Router configuration",
+        "All routes are accessible when user is authenticated",
+        "FriendWandsPage route includes userId parameter"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Add route definitions for /my-wands (rendering MyWandsPage), /friends (rendering FriendsPage), and /friends/:friendId/wands (rendering FriendWandsPage with friendId param). Ensure routes are protected by authentication checks. Import the new page components."
+        }
+      ]
+    },
+    {
+      "id": "REQ-37",
+      "summary": "Design magical wand-themed visual style with mystical aesthetics using deep woods colors and starlight accents",
+      "acceptanceCriteria": [
+        "Color scheme uses warm wood tones and starlight accents",
+        "Typography uses elegant serif fonts for headings",
+        "Consistent theme applied across all new components",
+        "Visual style distinct from previous marketplace theme"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Update CSS custom properties to use wand-themed color palette with oak browns (#8B4513, #654321), ebony blacks (#1a1a1a, #0a0a0a), mahogany reds (#C04000, #8B2500), and starlight accents (gold #FFD700, silver #C0C0C0). Update font imports to include elegant serif font (e.g., Cinzel, Playfair Display) for headings. Apply new color tokens throughout the theme variables."
+        },
+        {
+          "path": "frontend/tailwind.config.js",
+          "operation": "modify",
+          "description": "Update Tailwind config to include wand-themed color palette with custom colors for oak, ebony, mahogany, and starlight. Configure serif font family for headings. Add custom box-shadow utilities for mystical glow effects. Update existing color definitions to align with the new wand collector aesthetic."
         }
       ]
     }

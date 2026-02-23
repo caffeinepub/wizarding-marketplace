@@ -2,11 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-create-a-user-profile-page-component-that-displays-a-seller-s-information-including-their-name-email-if-provided-seller-status-and-member-since-date",
-      "featureTitle": "Create a user profile page component that displays a seller's information including their name, email (if provided), seller status, and member since date",
+      "featureId": "feature-create-a-mywandspage-component-displaying-the-authenticated-user-s-wand-collection-with-wand-count-list-of-wands-showing-names-and-buttons-to-add-new-wands-edit-wand-names-and-delete-wands",
+      "featureTitle": "Create a MyWandsPage component displaying the authenticated user's wand collection with wand count, list of wands showing names, and buttons to add new wands, edit wand names, and delete wands",
       "files": [
-        "frontend/src/App.tsx",
-        "frontend/src/pages/ProfilePage.tsx"
+        "frontend/src/pages/MyWandsPage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -18,15 +17,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-8"
+        "REQ-30"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-display-all-active-listings-created-by-the-profile-owner-on-their-profile-page-in-a-grid-layout-similar-to-the-browse-page",
-      "featureTitle": "Display all active listings created by the profile owner on their profile page in a grid layout similar to the browse page",
+      "featureId": "feature-create-an-addwandform-component-with-a-text-input-for-wand-name-and-submit-button-that-calls-the-backend-addwand-function",
+      "featureTitle": "Create an AddWandForm component with a text input for wand name and submit button that calls the backend addWand function",
       "files": [
-        "frontend/src/pages/ProfilePage.tsx"
+        "frontend/src/components/AddWandForm.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -38,16 +37,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-9"
+        "REQ-31"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-navigation-links-to-seller-profiles-from-item-cards-and-item-detail-pages-by-making-the-seller-name-clickable",
-      "featureTitle": "Add navigation links to seller profiles from item cards and item detail pages by making the seller name clickable",
+      "featureId": "feature-create-a-friendspage-component-displaying-the-user-s-friends-list-pending-friend-requests-and-a-section-to-search-and-send-friend-requests-to-other-users-by-their-username-or-userid",
+      "featureTitle": "Create a FriendsPage component displaying the user's friends list, pending friend requests, and a section to search and send friend requests to other users by their username or userId",
       "files": [
-        "frontend/src/components/ItemCard.tsx",
-        "frontend/src/pages/ItemDetailPage.tsx"
+        "frontend/src/pages/FriendsPage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -59,15 +57,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-11"
+        "REQ-32"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-create-a-react-query-hook-for-fetching-user-profile-data-with-their-listings-and-integrate-it-into-the-profile-page-component",
-      "featureTitle": "Create a React Query hook for fetching user profile data with their listings and integrate it into the profile page component",
+      "featureId": "feature-create-a-friendwandspage-component-that-displays-a-friend-s-wand-collection-including-their-wand-count-and-list-of-wand-names-accessible-by-clicking-on-a-friend-from-the-friendspage",
+      "featureTitle": "Create a FriendWandsPage component that displays a friend's wand collection including their wand count and list of wand names, accessible by clicking on a friend from the FriendsPage",
       "files": [
-        "frontend/src/hooks/useQueries.ts"
+        "frontend/src/pages/FriendWandsPage.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -79,13 +77,13 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-12"
+        "REQ-33"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-a-view-profile-link-or-button-in-the-layout-header-navigation-when-user-is-authenticated-that-navigates-to-their-own-profile-page",
-      "featureTitle": "Add a 'View Profile' link or button in the Layout header navigation when user is authenticated that navigates to their own profile page",
+      "featureId": "feature-update-layout-component-navigation-to-include-links-to-my-wands-and-friends-pages-replacing-or-alongside-existing-marketplace-navigation",
+      "featureTitle": "Update Layout component navigation to include links to My Wands and Friends pages, replacing or alongside existing marketplace navigation",
       "files": [
         "frontend/src/components/Layout.tsx"
       ],
@@ -99,7 +97,68 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-13"
+        "REQ-34"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-create-react-query-hooks-for-all-wand-related-operations-usemywands-useaddwand-useupdatewandname-usedeletewand-usefriendwands-and-friend-related-operations-usefriends-usependingrequests-usesendfriendrequest-useacceptrequest-userejectrequest",
+      "featureTitle": "Create React Query hooks for all wand-related operations (useMyWands, useAddWand, useUpdateWandName, useDeleteWand, useFriendWands) and friend-related operations (useFriends, usePendingRequests, useSendFriendRequest, useAcceptRequest, useRejectRequest)",
+      "files": [
+        "frontend/src/hooks/useQueries.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-35"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-update-app-tsx-to-include-routes-for-mywandspage-my-wands-friendspage-friends-and-friendwandspage-friends-userid-wands",
+      "featureTitle": "Update App.tsx to include routes for MyWandsPage (/my-wands), FriendsPage (/friends), and FriendWandsPage (/friends/:userId/wands)",
+      "files": [
+        "frontend/src/App.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-36"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-design-a-magical-wand-themed-visual-style-with-mystical-aesthetics-including-deep-woods-colors-oak-browns-ebony-blacks-mahogany-reds-starlight-accents-and-elegant-serif-typography-that-evokes-a-wand-collector-s-aesthetic-throughout-the-application",
+      "featureTitle": "Design a magical wand-themed visual style with mystical aesthetics including deep woods colors (oak browns, ebony blacks, mahogany reds), starlight accents, and elegant serif typography that evokes a wand collector's aesthetic throughout the application",
+      "files": [
+        "frontend/src/index.css",
+        "frontend/tailwind.config.js"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-37"
       ],
       "confidence": "high"
     }

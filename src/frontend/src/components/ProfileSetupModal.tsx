@@ -1,86 +1,96 @@
 import { useState } from 'react';
+import { useSaveCallerUserProfile } from '../hooks/useQueries';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useSaveCallerUserProfile } from '../hooks/useQueries';
-import { toast } from 'sonner';
-import { Wand2 } from 'lucide-react';
+import { Wand2, Loader2 } from 'lucide-react';
+import ProfilePictureUpload from './ProfilePictureUpload';
+import type { UserProfile } from '../backend';
+import { ExternalBlob } from '../backend';
 
 export default function ProfileSetupModal() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [isSeller, setIsSeller] = useState(false);
-  const saveProfile = useSaveCallerUserProfile();
+  const [profilePicture, setProfilePicture] = useState<ExternalBlob | null>(null);
+  const saveProfileMutation = useSaveCallerUserProfile();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) {
-      toast.error('Please enter your name');
-      return;
-    }
+    if (!name.trim()) return;
 
-    try {
-      await saveProfile.mutateAsync({
-        name: name.trim(),
-        email: email.trim() || undefined,
-        isSeller,
-      });
-      toast.success('Welcome to the Wizarding Marketplace!');
-    } catch (error) {
-      toast.error('Failed to save profile. Please try again.');
-      console.error(error);
-    }
+    const profile: UserProfile = {
+      name: name.trim(),
+      email: email.trim() || undefined,
+      isSeller: false,
+      profilePicture: profilePicture || undefined,
+    };
+
+    await saveProfileMutation.mutateAsync(profile);
   };
 
   return (
     <Dialog open={true}>
-      <DialogContent className="sm:max-w-md" onPointerDownOutside={(e) => e.preventDefault()}>
+      <DialogContent className="bg-gradient-to-br from-oak-dark to-oak-light border-starlight-gold/30 max-w-md">
         <DialogHeader>
-          <div className="flex items-center justify-center mb-4">
-            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-              <Wand2 className="h-8 w-8 text-primary" />
-            </div>
-          </div>
-          <DialogTitle className="text-center text-2xl">Welcome, Wizard!</DialogTitle>
-          <DialogDescription className="text-center">
-            Before you begin your magical journey, please tell us a bit about yourself.
+          <DialogTitle className="flex items-center gap-2 text-starlight-gold font-serif text-2xl">
+            <Wand2 className="h-6 w-6" />
+            Welcome to Wand Collector
+          </DialogTitle>
+          <DialogDescription className="text-starlight-silver/70">
+            Let's set up your profile to get started with your wand collection.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Name *</Label>
+        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+          <div>
+            <Label className="text-starlight-silver mb-2 block">Profile Picture (Optional)</Label>
+            <ProfilePictureUpload
+              value={profilePicture}
+              onChange={setProfilePicture}
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="setupName" className="text-starlight-silver">
+              Name *
+            </Label>
             <Input
-              id="name"
-              placeholder="Enter your name"
+              id="setupName"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
               required
+              className="bg-ebony/50 border-starlight-silver/30 text-starlight-silver"
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email (optional)</Label>
+
+          <div>
+            <Label htmlFor="setupEmail" className="text-starlight-silver">
+              Email (Optional)
+            </Label>
             <Input
-              id="email"
+              id="setupEmail"
               type="email"
-              placeholder="your.email@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="your.email@example.com"
+              className="bg-ebony/50 border-starlight-silver/30 text-starlight-silver"
             />
           </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="seller"
-              checked={isSeller}
-              onCheckedChange={(checked) => setIsSeller(checked as boolean)}
-            />
-            <Label htmlFor="seller" className="text-sm font-normal cursor-pointer">
-              I want to sell magical items
-            </Label>
-          </div>
-          <Button type="submit" className="w-full" disabled={saveProfile.isPending}>
-            {saveProfile.isPending ? 'Creating Profile...' : 'Enter the Marketplace'}
+
+          <Button
+            type="submit"
+            disabled={saveProfileMutation.isPending || !name.trim()}
+            className="w-full bg-gradient-to-r from-starlight-gold to-mahogany hover:from-starlight-gold/90 hover:to-mahogany/90 text-ebony font-semibold"
+          >
+            {saveProfileMutation.isPending ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Creating Profile...
+              </>
+            ) : (
+              'Complete Setup'
+            )}
           </Button>
         </form>
       </DialogContent>

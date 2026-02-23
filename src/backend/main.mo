@@ -9,6 +9,7 @@ import Time "mo:core/Time";
 import Runtime "mo:core/Runtime";
 import Order "mo:core/Order";
 import Principal "mo:core/Principal";
+
 import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 import Storage "blob-storage/Storage";
@@ -40,6 +41,7 @@ actor {
     #toys;
     #art;
     #collectibles;
+    #syrups;
     #other;
   };
 
@@ -53,7 +55,6 @@ actor {
     category : Category;
     image : ?Storage.ExternalBlob;
     created : Int;
-    // future: more fields
   };
 
   module Item {
@@ -87,6 +88,7 @@ actor {
     name : Text;
     email : ?Text;
     isSeller : Bool;
+    profilePicture : ?Storage.ExternalBlob;
   };
 
   public type PublicProfile = {
@@ -94,12 +96,37 @@ actor {
     activeListings : [Item];
   };
 
-  // Persistent state
+  // Wand, Magic, and Friendship System
+  public type Wand = {
+    id : Text;
+    name : Text;
+    owner : UserId;
+    createdAt : Int;
+  };
+
+  public type Magic = {
+    id : Text;
+    name : Text;
+    effect : Text;
+    owner : UserId;
+    wandId : Text;
+    createdAt : Int;
+  };
+
+  // Friendship data type for friendship management
+  public type Friendship = {
+    user : UserId;
+    friend : UserId;
+    confirmed : Bool;
+  };
+
   var idStore = 0;
   let items = Map.empty<ItemId, Item>();
   let shoppingCarts = Map.empty<UserId, ShoppingCart>();
   let messages = Map.empty<MessageId, Message>();
   let userProfiles = Map.empty<Principal, UserProfile>();
+  let wands = Map.empty<Text, Wand>();
+  let friendships = Map.empty<Text, Friendship>();
 
   func nextId() : Nat {
     var currentId = idStore;
@@ -107,7 +134,33 @@ actor {
     currentId;
   };
 
+  func generateFriendshipKey(user : UserId, friend : UserId) : Text {
+    user.toText() # "-" # friend.toText();
+  };
+
+  func areFriends(user1 : UserId, user2 : UserId) : Bool {
+    let key = generateFriendshipKey(user1, user2);
+    let reverseKey = generateFriendshipKey(user2, user1);
+
+    switch (friendships.get(key)) {
+      case (?friendship) { return friendship.confirmed };
+      case (null) {
+        switch (friendships.get(reverseKey)) {
+          case (?friendship) { return friendship.confirmed };
+          case (null) { return false };
+        };
+      };
+    };
+  };
+
   // User Profile Management
+  public shared ({ caller }) func saveCallerUserProfile(profile : UserProfile) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can save profiles");
+    };
+    userProfiles.add(caller, profile);
+  };
+
   public query ({ caller }) func getCallerUserProfile() : async ?UserProfile {
     if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
       Runtime.trap("Unauthorized: Only users can view profiles");
@@ -120,13 +173,6 @@ actor {
       Runtime.trap("Unauthorized: Can only view your own profile");
     };
     userProfiles.get(user);
-  };
-
-  public shared ({ caller }) func saveCallerUserProfile(profile : UserProfile) : async () {
-    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
-      Runtime.trap("Unauthorized: Only users can save profiles");
-    };
-    userProfiles.add(caller, profile);
   };
 
   public query ({ caller }) func getPublicProfile(user : UserId) : async ?PublicProfile {
@@ -224,17 +270,14 @@ actor {
   };
 
   public query ({ caller }) func getItem(itemId : ItemId) : async ?Item {
-    // Public access - anyone can view items
     items.get(itemId);
   };
 
   public query ({ caller }) func browseItems() : async [Item] {
-    // Public access - anyone can browse items
     items.values().toArray();
   };
 
   public query ({ caller }) func searchItemsByCategory(category : Category) : async [Item] {
-    // Public access - anyone can search items
     items.values().toArray().filter(
       func(item) {
         item.category == category
@@ -243,7 +286,6 @@ actor {
   };
 
   public query ({ caller }) func searchItemsByPriceRange(minPrice : Price, maxPrice : Price) : async [Item] {
-    // Public access - anyone can search items
     if (minPrice > maxPrice) { Runtime.trap("Invalid price range") };
     items.values().toArray().filter(
       func(item) {
@@ -253,7 +295,6 @@ actor {
   };
 
   public query ({ caller }) func searchItemsByCondition(condition : ItemCondition) : async [Item] {
-    // Public access - anyone can search items
     items.values().toArray().filter(
       func(item) {
         item.condition == condition
@@ -416,6 +457,182 @@ actor {
     messages.values().toArray().filter(
       func(message) {
         (message.from == caller and message.to == otherUser) or (message.from == otherUser and message.to == caller)
+      }
+    );
+  };
+
+  // Wand Management
+  public shared ({ caller }) func createWand(name : Text) : async Wand {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can create wands");
+    };
+    let id = "wand-" # caller.toText();
+    let wand : Wand = {
+      id;
+      name;
+      owner = caller;
+      createdAt = Time.now();
+    };
+    wands.add(id, wand);
+    wand;
+  };
+
+  public query ({ caller }) func getWands() : async [Wand] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can get wands");
+    };
+    wands.values().toArray().filter(
+      func(wand) {
+        wand.owner == caller
+      }
+    );
+  };
+
+  public query ({ caller }) func getWand(wandId : Text) : async ?Wand {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can view wands");
+    };
+    switch (wands.get(wandId)) {
+      case (null) { null };
+      case (?wand) {
+        // Allow access if caller is the owner or a confirmed friend
+        if (wand.owner == caller or areFriends(caller, wand.owner)) {
+          ?wand
+        } else {
+          Runtime.trap("Unauthorized: You can only view your own wands or wands of confirmed friends");
+        };
+      };
+    };
+  };
+
+  public shared ({ caller }) func updateWand(wandId : Text, name : Text) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can update wands");
+    };
+    let wand = switch (wands.get(wandId)) {
+      case (null) { Runtime.trap("Wand not found") };
+      case (?wand) { wand };
+    };
+    if (wand.owner != caller) {
+      Runtime.trap("Unauthorized: You can only update your own wands");
+    };
+    let updatedWand : Wand = { wand with name };
+    wands.add(wandId, updatedWand);
+  };
+
+  public shared ({ caller }) func deleteWand(wandId : Text) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can delete wands");
+    };
+    let wand = switch (wands.get(wandId)) {
+      case (null) { Runtime.trap("Wand not found") };
+      case (?wand) { wand };
+    };
+    if (wand.owner != caller) {
+      Runtime.trap("Unauthorized: You can only delete your own wands");
+    };
+    wands.remove(wandId);
+  };
+
+  // Friendship System
+  public shared ({ caller }) func sendFriendRequest(friendId : UserId) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can send friend requests");
+    };
+    if (caller == friendId) {
+      Runtime.trap("You cannot send a friend request to yourself");
+    };
+    let key = generateFriendshipKey(caller, friendId);
+    let reverseKey = generateFriendshipKey(friendId, caller);
+
+    if (
+      friendships.get(key) != null or
+      friendships.get(reverseKey) != null
+    ) {
+      Runtime.trap("Friend request already exists or you are already friends");
+    };
+
+    let friendship : Friendship = {
+      user = caller;
+      friend = friendId;
+      confirmed = false;
+    };
+    friendships.add(key, friendship);
+  };
+
+  public shared ({ caller }) func acceptFriendRequest(requesterId : UserId) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can accept friend requests");
+    };
+    let key = generateFriendshipKey(requesterId, caller);
+    let friendship = switch (friendships.get(key)) {
+      case (null) { Runtime.trap("Friend request not found") };
+      case (?friendship) { friendship };
+    };
+    if (friendship.friend != caller) {
+      Runtime.trap("Unauthorized: You can only accept requests sent to you");
+    };
+    let updatedFriendship : Friendship = { friendship with confirmed = true };
+    friendships.add(key, updatedFriendship);
+  };
+
+  public shared ({ caller }) func rejectFriendRequest(requesterId : UserId) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can reject friend requests");
+    };
+    let key = generateFriendshipKey(requesterId, caller);
+    switch (friendships.get(key)) {
+      case (null) { Runtime.trap("Friend request not found") };
+      case (_) {
+        friendships.remove(key);
+      };
+    };
+  };
+
+  public query ({ caller }) func getPendingFriendRequests() : async [Friendship] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can view pending friend requests");
+    };
+    friendships.values().toArray().filter(
+      func(friendship) {
+        friendship.friend == caller and not friendship.confirmed
+      }
+    );
+  };
+
+  public query ({ caller }) func getConfirmedFriends() : async [UserId] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can view friends");
+    };
+    let outgoingFriends = friendships.values().toArray().filter(
+      func(friendship) {
+        friendship.user == caller and friendship.confirmed
+      }
+    );
+    let incomingFriends = friendships.values().toArray().filter(
+      func(friendship) {
+        friendship.friend == caller and friendship.confirmed
+      }
+    );
+    let friendsArray = outgoingFriends.concat(incomingFriends);
+    let friendIds = friendsArray.map(
+      func(friendship) {
+        if (friendship.user == caller) { friendship.friend } else { friendship.user };
+      }
+    );
+    friendIds;
+  };
+
+  public query ({ caller }) func getFriendWands(friendId : UserId) : async [Wand] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #user))) {
+      Runtime.trap("Unauthorized: Only users can view friend wands");
+    };
+    if (not areFriends(caller, friendId)) {
+      Runtime.trap("Unauthorized: You are not friends with this user");
+    };
+    wands.values().toArray().filter(
+      func(wand) {
+        wand.owner == friendId
       }
     );
   };

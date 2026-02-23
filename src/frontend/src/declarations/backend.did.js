@@ -19,13 +19,13 @@ export const _CaffeineStorageRefillResult = IDL.Record({
   'success' : IDL.Opt(IDL.Bool),
   'topped_up_amount' : IDL.Opt(IDL.Nat),
 });
+export const UserId = IDL.Principal;
 export const ItemId = IDL.Nat;
 export const UserRole = IDL.Variant({
   'admin' : IDL.Null,
   'user' : IDL.Null,
   'guest' : IDL.Null,
 });
-export const UserId = IDL.Principal;
 export const Category = IDL.Variant({
   'art' : IDL.Null,
   'clothing' : IDL.Null,
@@ -35,6 +35,7 @@ export const Category = IDL.Variant({
   'books' : IDL.Null,
   'wands' : IDL.Null,
   'props' : IDL.Null,
+  'syrups' : IDL.Null,
 });
 export const ExternalBlob = IDL.Vec(IDL.Nat8);
 export const Price = IDL.Int;
@@ -55,10 +56,17 @@ export const Item = IDL.Record({
   'price' : Price,
   'condition' : ItemCondition,
 });
+export const Wand = IDL.Record({
+  'id' : IDL.Text,
+  'owner' : UserId,
+  'name' : IDL.Text,
+  'createdAt' : IDL.Int,
+});
 export const UserProfile = IDL.Record({
   'name' : IDL.Text,
   'email' : IDL.Opt(IDL.Text),
   'isSeller' : IDL.Bool,
+  'profilePicture' : IDL.Opt(ExternalBlob),
 });
 export const MessageId = IDL.Nat;
 export const Message = IDL.Record({
@@ -67,6 +75,11 @@ export const Message = IDL.Record({
   'content' : IDL.Text,
   'from' : UserId,
   'timestamp' : IDL.Int,
+});
+export const Friendship = IDL.Record({
+  'user' : UserId,
+  'friend' : UserId,
+  'confirmed' : IDL.Bool,
 });
 export const PublicProfile = IDL.Record({
   'activeListings' : IDL.Vec(Item),
@@ -103,6 +116,7 @@ export const idlService = IDL.Service({
     ),
   '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+  'acceptFriendRequest' : IDL.Func([UserId], [], []),
   'addToCart' : IDL.Func([ItemId, IDL.Nat], [], []),
   'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
   'browseItems' : IDL.Func([], [IDL.Vec(Item)], ['query']),
@@ -119,20 +133,28 @@ export const idlService = IDL.Service({
       [ItemId],
       [],
     ),
+  'createWand' : IDL.Func([IDL.Text], [Wand], []),
   'deleteItemListing' : IDL.Func([ItemId], [], []),
+  'deleteWand' : IDL.Func([IDL.Text], [], []),
   'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
   'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+  'getConfirmedFriends' : IDL.Func([], [IDL.Vec(UserId)], ['query']),
   'getConversation' : IDL.Func([UserId], [IDL.Vec(Message)], ['query']),
+  'getFriendWands' : IDL.Func([UserId], [IDL.Vec(Wand)], ['query']),
   'getItem' : IDL.Func([ItemId], [IDL.Opt(Item)], ['query']),
   'getMessages' : IDL.Func([], [IDL.Vec(Message)], ['query']),
   'getMyListings' : IDL.Func([], [IDL.Vec(Item)], ['query']),
+  'getPendingFriendRequests' : IDL.Func([], [IDL.Vec(Friendship)], ['query']),
   'getPublicProfile' : IDL.Func([UserId], [IDL.Opt(PublicProfile)], ['query']),
   'getUserProfile' : IDL.Func(
       [IDL.Principal],
       [IDL.Opt(UserProfile)],
       ['query'],
     ),
+  'getWand' : IDL.Func([IDL.Text], [IDL.Opt(Wand)], ['query']),
+  'getWands' : IDL.Func([], [IDL.Vec(Wand)], ['query']),
   'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+  'rejectFriendRequest' : IDL.Func([UserId], [], []),
   'removeFromCart' : IDL.Func([ItemId], [], []),
   'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
   'searchItemsByCategory' : IDL.Func([Category], [IDL.Vec(Item)], ['query']),
@@ -146,6 +168,7 @@ export const idlService = IDL.Service({
       [IDL.Vec(Item)],
       ['query'],
     ),
+  'sendFriendRequest' : IDL.Func([UserId], [], []),
   'sendMessage' : IDL.Func([UserId, IDL.Text], [MessageId], []),
   'updateCartItem' : IDL.Func([ItemId, IDL.Nat], [], []),
   'updateItemListing' : IDL.Func(
@@ -161,6 +184,7 @@ export const idlService = IDL.Service({
       [],
       [],
     ),
+  'updateWand' : IDL.Func([IDL.Text, IDL.Text], [], []),
   'viewCart' : IDL.Func([], [ShoppingCartView], []),
 });
 
@@ -178,13 +202,13 @@ export const idlFactory = ({ IDL }) => {
     'success' : IDL.Opt(IDL.Bool),
     'topped_up_amount' : IDL.Opt(IDL.Nat),
   });
+  const UserId = IDL.Principal;
   const ItemId = IDL.Nat;
   const UserRole = IDL.Variant({
     'admin' : IDL.Null,
     'user' : IDL.Null,
     'guest' : IDL.Null,
   });
-  const UserId = IDL.Principal;
   const Category = IDL.Variant({
     'art' : IDL.Null,
     'clothing' : IDL.Null,
@@ -194,6 +218,7 @@ export const idlFactory = ({ IDL }) => {
     'books' : IDL.Null,
     'wands' : IDL.Null,
     'props' : IDL.Null,
+    'syrups' : IDL.Null,
   });
   const ExternalBlob = IDL.Vec(IDL.Nat8);
   const Price = IDL.Int;
@@ -214,10 +239,17 @@ export const idlFactory = ({ IDL }) => {
     'price' : Price,
     'condition' : ItemCondition,
   });
+  const Wand = IDL.Record({
+    'id' : IDL.Text,
+    'owner' : UserId,
+    'name' : IDL.Text,
+    'createdAt' : IDL.Int,
+  });
   const UserProfile = IDL.Record({
     'name' : IDL.Text,
     'email' : IDL.Opt(IDL.Text),
     'isSeller' : IDL.Bool,
+    'profilePicture' : IDL.Opt(ExternalBlob),
   });
   const MessageId = IDL.Nat;
   const Message = IDL.Record({
@@ -226,6 +258,11 @@ export const idlFactory = ({ IDL }) => {
     'content' : IDL.Text,
     'from' : UserId,
     'timestamp' : IDL.Int,
+  });
+  const Friendship = IDL.Record({
+    'user' : UserId,
+    'friend' : UserId,
+    'confirmed' : IDL.Bool,
   });
   const PublicProfile = IDL.Record({
     'activeListings' : IDL.Vec(Item),
@@ -262,6 +299,7 @@ export const idlFactory = ({ IDL }) => {
       ),
     '_caffeineStorageUpdateGatewayPrincipals' : IDL.Func([], [], []),
     '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
+    'acceptFriendRequest' : IDL.Func([UserId], [], []),
     'addToCart' : IDL.Func([ItemId, IDL.Nat], [], []),
     'assignCallerUserRole' : IDL.Func([IDL.Principal, UserRole], [], []),
     'browseItems' : IDL.Func([], [IDL.Vec(Item)], ['query']),
@@ -278,13 +316,18 @@ export const idlFactory = ({ IDL }) => {
         [ItemId],
         [],
       ),
+    'createWand' : IDL.Func([IDL.Text], [Wand], []),
     'deleteItemListing' : IDL.Func([ItemId], [], []),
+    'deleteWand' : IDL.Func([IDL.Text], [], []),
     'getCallerUserProfile' : IDL.Func([], [IDL.Opt(UserProfile)], ['query']),
     'getCallerUserRole' : IDL.Func([], [UserRole], ['query']),
+    'getConfirmedFriends' : IDL.Func([], [IDL.Vec(UserId)], ['query']),
     'getConversation' : IDL.Func([UserId], [IDL.Vec(Message)], ['query']),
+    'getFriendWands' : IDL.Func([UserId], [IDL.Vec(Wand)], ['query']),
     'getItem' : IDL.Func([ItemId], [IDL.Opt(Item)], ['query']),
     'getMessages' : IDL.Func([], [IDL.Vec(Message)], ['query']),
     'getMyListings' : IDL.Func([], [IDL.Vec(Item)], ['query']),
+    'getPendingFriendRequests' : IDL.Func([], [IDL.Vec(Friendship)], ['query']),
     'getPublicProfile' : IDL.Func(
         [UserId],
         [IDL.Opt(PublicProfile)],
@@ -295,7 +338,10 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Opt(UserProfile)],
         ['query'],
       ),
+    'getWand' : IDL.Func([IDL.Text], [IDL.Opt(Wand)], ['query']),
+    'getWands' : IDL.Func([], [IDL.Vec(Wand)], ['query']),
     'isCallerAdmin' : IDL.Func([], [IDL.Bool], ['query']),
+    'rejectFriendRequest' : IDL.Func([UserId], [], []),
     'removeFromCart' : IDL.Func([ItemId], [], []),
     'saveCallerUserProfile' : IDL.Func([UserProfile], [], []),
     'searchItemsByCategory' : IDL.Func([Category], [IDL.Vec(Item)], ['query']),
@@ -309,6 +355,7 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Vec(Item)],
         ['query'],
       ),
+    'sendFriendRequest' : IDL.Func([UserId], [], []),
     'sendMessage' : IDL.Func([UserId, IDL.Text], [MessageId], []),
     'updateCartItem' : IDL.Func([ItemId, IDL.Nat], [], []),
     'updateItemListing' : IDL.Func(
@@ -324,6 +371,7 @@ export const idlFactory = ({ IDL }) => {
         [],
         [],
       ),
+    'updateWand' : IDL.Func([IDL.Text, IDL.Text], [], []),
     'viewCart' : IDL.Func([], [ShoppingCartView], []),
   });
 };

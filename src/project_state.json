@@ -1,15 +1,15 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 5,
-  "summary": "A second-hand marketplace app for Harry Potter and wizarding world items where users can buy and sell magical collectibles",
+  "projectStateVersion": 13,
+  "summary": "A wand collection tracking app where users can catalog their wands with names, add friends, and view their friends' wand collections",
   "architectural_notes": [
-    "Marketplace app requiring user authentication",
-    "Image upload capability needed for item listings",
-    "Payment processing integration required",
-    "User-to-user messaging system"
+    "User authentication system required",
+    "Friend/social connection system needed",
+    "Wand collection data model with name and count tracking"
   ],
   "known_issues": [],
   "isFixRequest": false,
+  "imageRequirements": "## Required Images\n- Elegant crossed wands icon with starlight sparkles on dark wood background (wand-logo.dim_256x256.png)\n- Mystical wand collection hero banner with magical glow effects and dark atmospheric background (wand-hero.dim_1200x400.png)",
   "existing_features": [
     {
       "id": "feature-create-user-authentication-system-using-internet-identity-for-buyers-and-sellers-to-securely-log-in",
@@ -106,50 +106,192 @@
         "REQ-13"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-replace-the-existing-marketplace-logo-image-identified-by-xpath-html-1-body-1-div-1-div-1-header-1-div-1-div-1-a-1-img-1-in-the-layout-header-with-a-new-generated-image-depicting-harry-potter-s-lightning-bolt-scar",
+      "title": "Replace the existing marketplace logo image (identified by XPath /html[1]/body[1]/div[1]/div[1]/header[1]/div[1]/div[1]/a[1]/img[1] in the Layout header) with a new generated image depicting Harry Potter's lightning bolt scar",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-an-accountsettingspage-component-where-authenticated-users-can-view-and-edit-their-profile-information-including-name-email-seller-status-and-profile-picture",
+      "title": "Create an AccountSettingsPage component where authenticated users can view and edit their profile information including name, email, seller status, and profile picture",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-profile-picture-upload-component-to-the-accountsettingspage-that-allows-users-to-select-an-image-file-preview-it-before-uploading-and-submit-it-to-update-their-profile-picture",
+      "title": "Add a profile picture upload component to the AccountSettingsPage that allows users to select an image file, preview it before uploading, and submit it to update their profile picture",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-user-profile-pictures-in-the-profilepage-component-layout-header-navigation-when-authenticated-and-on-item-cards-detail-pages-next-to-seller-names",
+      "title": "Display user profile pictures in the ProfilePage component, Layout header navigation when authenticated, and on item cards/detail pages next to seller names",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-account-settings-navigation-link-in-the-layout-header-that-routes-to-the-accountsettingspage-when-a-user-is-authenticated",
+      "title": "Add an 'Account Settings' navigation link in the Layout header that routes to the AccountSettingsPage when a user is authenticated",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-react-query-hooks-for-fetching-the-authenticated-user-s-own-profile-data-and-for-updating-profile-information-including-profile-picture-uploads",
+      "title": "Create React Query hooks for fetching the authenticated user's own profile data and for updating profile information including profile picture uploads",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-profilesetupmodal-to-include-a-profile-picture-upload-option-during-initial-account-setup",
+      "title": "Update the ProfileSetupModal to include a profile picture upload option during initial account setup",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-createlistingform-component-to-support-listing-custom-syrup-products-by-ensuring-the-category-dropdown-includes-a-syrups-or-potions-syrups-option-that-sellers-can-select-when-creating-their-listing",
+      "title": "Update the CreateListingForm component to support listing custom syrup products by ensuring the category dropdown includes a 'Syrups' or 'Potions & Syrups' option that sellers can select when creating their listing",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-filterpanel-component-to-include-the-new-syrup-category-in-the-category-filter-dropdown-so-buyers-can-filter-specifically-for-syrup-products",
+      "title": "Update the FilterPanel component to include the new syrup category in the category filter dropdown so buyers can filter specifically for syrup products",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-mywandspage-component-displaying-the-authenticated-user-s-wand-collection-with-wand-count-list-of-wands-showing-names-and-buttons-to-add-new-wands-edit-wand-names-and-delete-wands",
+      "title": "Create a MyWandsPage component displaying the authenticated user's wand collection with wand count, list of wands showing names, and buttons to add new wands, edit wand names, and delete wands",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-an-addwandform-component-with-a-text-input-for-wand-name-and-submit-button-that-calls-the-backend-addwand-function",
+      "title": "Create an AddWandForm component with a text input for wand name and submit button that calls the backend addWand function",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-friendspage-component-displaying-the-user-s-friends-list-pending-friend-requests-and-a-section-to-search-and-send-friend-requests-to-other-users-by-their-username-or-userid",
+      "title": "Create a FriendsPage component displaying the user's friends list, pending friend requests, and a section to search and send friend requests to other users by their username or userId",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-friendwandspage-component-that-displays-a-friend-s-wand-collection-including-their-wand-count-and-list-of-wand-names-accessible-by-clicking-on-a-friend-from-the-friendspage",
+      "title": "Create a FriendWandsPage component that displays a friend's wand collection including their wand count and list of wand names, accessible by clicking on a friend from the FriendsPage",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-layout-component-navigation-to-include-links-to-my-wands-and-friends-pages-replacing-or-alongside-existing-marketplace-navigation",
+      "title": "Update Layout component navigation to include links to My Wands and Friends pages, replacing or alongside existing marketplace navigation",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-react-query-hooks-for-all-wand-related-operations-usemywands-useaddwand-useupdatewandname-usedeletewand-usefriendwands-and-friend-related-operations-usefriends-usependingrequests-usesendfriendrequest-useacceptrequest-userejectrequest",
+      "title": "Create React Query hooks for all wand-related operations (useMyWands, useAddWand, useUpdateWandName, useDeleteWand, useFriendWands) and friend-related operations (useFriends, usePendingRequests, useSendFriendRequest, useAcceptRequest, useRejectRequest)",
+      "reqIds": [
+        "REQ-35"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-app-tsx-to-include-routes-for-mywandspage-my-wands-friendspage-friends-and-friendwandspage-friends-userid-wands",
+      "title": "Update App.tsx to include routes for MyWandsPage (/my-wands), FriendsPage (/friends), and FriendWandsPage (/friends/:userId/wands)",
+      "reqIds": [
+        "REQ-36"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-design-a-magical-wand-themed-visual-style-with-mystical-aesthetics-including-deep-woods-colors-oak-browns-ebony-blacks-mahogany-reds-starlight-accents-and-elegant-serif-typography-that-evokes-a-wand-collector-s-aesthetic-throughout-the-application",
+      "title": "Design a magical wand-themed visual style with mystical aesthetics including deep woods colors (oak browns, ebony blacks, mahogany reds), starlight accents, and elegant serif typography that evokes a wand collector's aesthetic throughout the application",
+      "reqIds": [
+        "REQ-37"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "User accounts and authentication system",
+      "summary": "User authentication system for wand collectors",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-2",
-      "summary": "Item listing creation with photos, descriptions, and pricing",
+      "summary": "Wand collection interface where users can add, name, and count their wands",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-3",
-      "summary": "Browse and search marketplace for Harry Potter/wizarding items",
+      "summary": "Friend system allowing users to add friends and view each other's wand collections",
       "reqIds": [],
       "status": "pending"
     },
     {
       "id": "AR-4",
-      "summary": "Shopping cart and checkout system",
-      "reqIds": [],
+      "summary": "Create a backend Wand type with fields for id (Text), name (Text), owner (Principal), and createdAt (Int) timestamp",
+      "reqIds": [
+        "REQ-26"
+      ],
       "status": "pending"
     },
     {
       "id": "AR-5",
-      "summary": "Messaging system between buyers and sellers",
-      "reqIds": [],
+      "summary": "Implement backend functions to create a new wand, retrieve all wands for a user, retrieve a specific wand by id, update a wand's name, and delete a wand",
+      "reqIds": [
+        "REQ-27"
+      ],
       "status": "pending"
     },
     {
       "id": "AR-6",
-      "summary": "User profile pages where sellers can showcase their collections",
-      "reqIds": [],
+      "summary": "Create a backend Friendship type and implement friend request system with functions to send friend requests, accept requests, reject requests, get pending requests, and get confirmed friends list",
+      "reqIds": [
+        "REQ-28"
+      ],
       "status": "pending"
     },
     {
-      "id": "AR-9",
-      "summary": "Add backend query function to retrieve a user's public profile information by principal ID including their profile data and all their active listings",
+      "id": "AR-7",
+      "summary": "Implement backend function to retrieve wands belonging to a friend, returning wands only if a confirmed friendship exists between the caller and the wand owner",
       "reqIds": [
-        "REQ-10"
+        "REQ-29"
       ],
       "status": "pending"
     }

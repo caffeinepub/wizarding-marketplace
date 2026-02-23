@@ -18,8 +18,14 @@ export type Category = { 'art' : null } |
   { 'toys' : null } |
   { 'books' : null } |
   { 'wands' : null } |
-  { 'props' : null };
+  { 'props' : null } |
+  { 'syrups' : null };
 export type ExternalBlob = Uint8Array;
+export interface Friendship {
+  'user' : UserId,
+  'friend' : UserId,
+  'confirmed' : boolean,
+}
 export interface Item {
   'id' : ItemId,
   'title' : string,
@@ -55,10 +61,17 @@ export interface UserProfile {
   'name' : string,
   'email' : [] | [string],
   'isSeller' : boolean,
+  'profilePicture' : [] | [ExternalBlob],
 }
 export type UserRole = { 'admin' : null } |
   { 'user' : null } |
   { 'guest' : null };
+export interface Wand {
+  'id' : string,
+  'owner' : UserId,
+  'name' : string,
+  'createdAt' : bigint,
+}
 export interface _CaffeineStorageCreateCertificateResult {
   'method' : string,
   'blob_hash' : string,
@@ -87,6 +100,7 @@ export interface _SERVICE {
   >,
   '_caffeineStorageUpdateGatewayPrincipals' : ActorMethod<[], undefined>,
   '_initializeAccessControlWithSecret' : ActorMethod<[string], undefined>,
+  'acceptFriendRequest' : ActorMethod<[UserId], undefined>,
   'addToCart' : ActorMethod<[ItemId, bigint], undefined>,
   'assignCallerUserRole' : ActorMethod<[Principal, UserRole], undefined>,
   'browseItems' : ActorMethod<[], Array<Item>>,
@@ -95,21 +109,30 @@ export interface _SERVICE {
     [string, string, Price, ItemCondition, Category, [] | [ExternalBlob]],
     ItemId
   >,
+  'createWand' : ActorMethod<[string], Wand>,
   'deleteItemListing' : ActorMethod<[ItemId], undefined>,
+  'deleteWand' : ActorMethod<[string], undefined>,
   'getCallerUserProfile' : ActorMethod<[], [] | [UserProfile]>,
   'getCallerUserRole' : ActorMethod<[], UserRole>,
+  'getConfirmedFriends' : ActorMethod<[], Array<UserId>>,
   'getConversation' : ActorMethod<[UserId], Array<Message>>,
+  'getFriendWands' : ActorMethod<[UserId], Array<Wand>>,
   'getItem' : ActorMethod<[ItemId], [] | [Item]>,
   'getMessages' : ActorMethod<[], Array<Message>>,
   'getMyListings' : ActorMethod<[], Array<Item>>,
+  'getPendingFriendRequests' : ActorMethod<[], Array<Friendship>>,
   'getPublicProfile' : ActorMethod<[UserId], [] | [PublicProfile]>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
+  'getWand' : ActorMethod<[string], [] | [Wand]>,
+  'getWands' : ActorMethod<[], Array<Wand>>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
+  'rejectFriendRequest' : ActorMethod<[UserId], undefined>,
   'removeFromCart' : ActorMethod<[ItemId], undefined>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'searchItemsByCategory' : ActorMethod<[Category], Array<Item>>,
   'searchItemsByCondition' : ActorMethod<[ItemCondition], Array<Item>>,
   'searchItemsByPriceRange' : ActorMethod<[Price, Price], Array<Item>>,
+  'sendFriendRequest' : ActorMethod<[UserId], undefined>,
   'sendMessage' : ActorMethod<[UserId, string], MessageId>,
   'updateCartItem' : ActorMethod<[ItemId, bigint], undefined>,
   'updateItemListing' : ActorMethod<
@@ -124,6 +147,7 @@ export interface _SERVICE {
     ],
     undefined
   >,
+  'updateWand' : ActorMethod<[string, string], undefined>,
   'viewCart' : ActorMethod<[], ShoppingCartView>,
 }
 export declare const idlService: IDL.ServiceClass;

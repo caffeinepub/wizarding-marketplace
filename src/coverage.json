@@ -1,49 +1,90 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-23T17:23:30.371Z",
+  "generatedAt": "2026-02-23T20:56:04.439Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 6,
-    "implemented": 5,
+    "total": 12,
+    "implemented": 8,
     "items": [
       {
-        "id": "REQ-10",
-        "summary": "Add backend query function to retrieve a user's public profile information by principal ID including their profile data and all their active listings",
+        "id": "REQ-26",
+        "summary": "Create a backend Wand type with fields for id (Text), name (Text), owner (Principal), and createdAt (Int) timestamp",
         "status": "unknown",
         "plannedFiles": [],
         "matchedFiles": []
       },
       {
-        "id": "REQ-11",
-        "summary": "Add navigation links to seller profiles from item cards and item detail pages by making the seller name clickable",
+        "id": "REQ-27",
+        "summary": "Implement backend functions to create a new wand, retrieve all wands for a user, retrieve a specific wand by id, update a wand's name, and delete a wand",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-28",
+        "summary": "Create a backend Friendship type and implement friend request system with functions to send friend requests, accept requests, reject requests, get pending requests, and get confirmed friends list",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-29",
+        "summary": "Implement backend function to retrieve wands belonging to a friend, returning wands only if a confirmed friendship exists between the caller and the wand owner",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-30",
+        "summary": "Create a MyWandsPage component displaying the authenticated user's wand collection with wand count, list of wands showing names, and buttons to add new wands, edit wand names, and delete wands",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/ItemCard.tsx",
-          "frontend/src/pages/ItemDetailPage.tsx"
+          "frontend/src/pages/MyWandsPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/ItemCard.tsx",
-          "frontend/src/pages/ItemDetailPage.tsx"
+          "frontend/src/pages/MyWandsPage.tsx"
         ]
       },
       {
-        "id": "REQ-12",
-        "summary": "Create a React Query hook for fetching user profile data with their listings and integrate it into the profile page component",
+        "id": "REQ-31",
+        "summary": "Create an AddWandForm component with a text input for wand name and submit button that calls the backend addWand function",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/AddWandForm.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/hooks/useQueries.ts"
+          "frontend/src/components/AddWandForm.tsx"
         ]
       },
       {
-        "id": "REQ-13",
-        "summary": "Add a 'View Profile' link or button in the Layout header navigation when user is authenticated that navigates to their own profile page",
+        "id": "REQ-32",
+        "summary": "Create a FriendsPage component displaying the user's friends list, pending friend requests, and a section to search and send friend requests to other users by their username or userId",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/FriendsPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/FriendsPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-33",
+        "summary": "Create a FriendWandsPage component that displays a friend's wand collection including their wand count and list of wand names, accessible by clicking on a friend from the FriendsPage",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/pages/FriendWandsPage.tsx"
+        ],
+        "matchedFiles": [
+          "frontend/src/pages/FriendWandsPage.tsx"
+        ]
+      },
+      {
+        "id": "REQ-34",
+        "summary": "Update Layout component navigation to include links to My Wands and Friends pages, replacing or alongside existing marketplace navigation",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/components/Layout.tsx"
@@ -53,27 +94,38 @@
         ]
       },
       {
-        "id": "REQ-8",
-        "summary": "Create a user profile page component that displays a seller's information including their name, email (if provided), seller status, and member since date",
+        "id": "REQ-35",
+        "summary": "Create React Query hooks for all wand-related operations (useMyWands, useAddWand, useUpdateWandName, useDeleteWand, useFriendWands) and friend-related operations (useFriends, usePendingRequests, useSendFriendRequest, useAcceptRequest, useRejectRequest)",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/ProfilePage.tsx",
+          "frontend/src/hooks/useQueries.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/hooks/useQueries.ts"
+        ]
+      },
+      {
+        "id": "REQ-36",
+        "summary": "Update App.tsx to include routes for MyWandsPage (/my-wands), FriendsPage (/friends), and FriendWandsPage (/friends/:userId/wands)",
+        "status": "implemented",
+        "plannedFiles": [
           "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/pages/ProfilePage.tsx",
           "frontend/src/App.tsx"
         ]
       },
       {
-        "id": "REQ-9",
-        "summary": "Display all active listings created by the profile owner on their profile page in a grid layout similar to the browse page",
+        "id": "REQ-37",
+        "summary": "Design a magical wand-themed visual style with mystical aesthetics including deep woods colors (oak browns, ebony blacks, mahogany reds), starlight accents, and elegant serif typography that evokes a wand collector's aesthetic throughout the application",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/pages/ProfilePage.tsx"
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js"
         ],
         "matchedFiles": [
-          "frontend/src/pages/ProfilePage.tsx"
+          "frontend/src/index.css",
+          "frontend/tailwind.config.js"
         ]
       }
     ]
@@ -81,20 +133,45 @@
   "changedFiles": [
     "backend/main.mo",
     "build-request.json",
-    "build-template/README.md",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/public/assets/generated/wand-hero.dim_1200x400.png",
+    "frontend/public/assets/generated/wand-logo.dim_256x256.png",
     "frontend/src/App.tsx",
     "frontend/src/backend.d.ts",
     "frontend/src/backend.ts",
+    "frontend/src/components/AddToCartButton.tsx",
+    "frontend/src/components/AddWandForm.tsx",
+    "frontend/src/components/CartIcon.tsx",
+    "frontend/src/components/ContactSellerButton.tsx",
+    "frontend/src/components/CreateListingForm.tsx",
+    "frontend/src/components/EditWandForm.tsx",
+    "frontend/src/components/FilterPanel.tsx",
+    "frontend/src/components/HeroBanner.tsx",
     "frontend/src/components/ItemCard.tsx",
     "frontend/src/components/Layout.tsx",
+    "frontend/src/components/ProfilePictureUpload.tsx",
+    "frontend/src/components/ProfileSetupModal.tsx",
+    "frontend/src/components/SearchBar.tsx",
     "frontend/src/declarations/backend.did.d.ts",
     "frontend/src/declarations/backend.did.js",
     "frontend/src/hooks/useQueries.ts",
+    "frontend/src/index.css",
+    "frontend/src/pages/AccountSettingsPage.tsx",
+    "frontend/src/pages/BrowsePage.tsx",
+    "frontend/src/pages/CartPage.tsx",
+    "frontend/src/pages/CheckoutPage.tsx",
+    "frontend/src/pages/ConversationPage.tsx",
+    "frontend/src/pages/CreateListingPage.tsx",
+    "frontend/src/pages/FriendWandsPage.tsx",
+    "frontend/src/pages/FriendsPage.tsx",
+    "frontend/src/pages/InboxPage.tsx",
     "frontend/src/pages/ItemDetailPage.tsx",
+    "frontend/src/pages/MyListingsPage.tsx",
+    "frontend/src/pages/MyWandsPage.tsx",
     "frontend/src/pages/ProfilePage.tsx",
+    "frontend/tailwind.config.js",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

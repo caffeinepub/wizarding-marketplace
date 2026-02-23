@@ -2,15 +2,10 @@ import { RouterProvider, createRouter, createRoute, createRootRoute, Outlet } fr
 import { useInternetIdentity } from './hooks/useInternetIdentity';
 import { useGetCallerUserProfile } from './hooks/useQueries';
 import Layout from './components/Layout';
-import BrowsePage from './pages/BrowsePage';
-import CreateListingPage from './pages/CreateListingPage';
-import CartPage from './pages/CartPage';
-import CheckoutPage from './pages/CheckoutPage';
-import InboxPage from './pages/InboxPage';
-import ConversationPage from './pages/ConversationPage';
-import ItemDetailPage from './pages/ItemDetailPage';
-import MyListingsPage from './pages/MyListingsPage';
-import ProfilePage from './pages/ProfilePage';
+import MyWandsPage from './pages/MyWandsPage';
+import FriendsPage from './pages/FriendsPage';
+import FriendWandsPage from './pages/FriendWandsPage';
+import AccountSettingsPage from './pages/AccountSettingsPage';
 import ProfileSetupModal from './components/ProfileSetupModal';
 import { Toaster } from '@/components/ui/sonner';
 import { ThemeProvider } from 'next-themes';
@@ -30,74 +25,39 @@ const rootRoute = createRootRoute({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: BrowsePage,
+  component: MyWandsPage,
 });
 
-const browseRoute = createRoute({
+const myWandsRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/browse',
-  component: BrowsePage,
+  path: '/my-wands',
+  component: MyWandsPage,
 });
 
-const createListingRoute = createRoute({
+const friendsRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/create-listing',
-  component: CreateListingPage,
+  path: '/friends',
+  component: FriendsPage,
 });
 
-const cartRoute = createRoute({
+const friendWandsRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/cart',
-  component: CartPage,
+  path: '/friends/$friendId/wands',
+  component: FriendWandsPage,
 });
 
-const checkoutRoute = createRoute({
+const accountSettingsRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '/checkout',
-  component: CheckoutPage,
-});
-
-const inboxRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/inbox',
-  component: InboxPage,
-});
-
-const conversationRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/conversation/$userId',
-  component: ConversationPage,
-});
-
-const itemDetailRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/item/$itemId',
-  component: ItemDetailPage,
-});
-
-const myListingsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/my-listings',
-  component: MyListingsPage,
-});
-
-const profileRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/profile/$userId',
-  component: ProfilePage,
+  path: '/account-settings',
+  component: AccountSettingsPage,
 });
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
-  browseRoute,
-  createListingRoute,
-  cartRoute,
-  checkoutRoute,
-  inboxRoute,
-  conversationRoute,
-  itemDetailRoute,
-  myListingsRoute,
-  profileRoute,
+  myWandsRoute,
+  friendsRoute,
+  friendWandsRoute,
+  accountSettingsRoute,
 ]);
 
 const router = createRouter({ routeTree });

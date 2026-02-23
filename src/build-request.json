@@ -1,142 +1,254 @@
 {
   "kind": "build_request",
-  "title": "Add user profile pages for sellers to showcase their collections",
-  "projectName": "Wizarding Marketplace",
+  "title": "Create wand collection tracking app with friend system",
+  "projectName": "Wand Collector",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-8",
-      "text": "Create a user profile page component that displays a seller's information including their name, email (if provided), seller status, and member since date",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-yes"
-        ],
-        "quotes": [
-          "sellers can showcase their collections"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Profile page displays user's name prominently",
-        "Shows email if the user provided one during registration",
-        "Displays seller badge or indicator if user is a seller",
-        "Shows account creation date in a readable format",
-        "Page is accessible via route like /profile/:userId"
-      ]
-    },
-    {
-      "id": "REQ-9",
-      "text": "Display all active listings created by the profile owner on their profile page in a grid layout similar to the browse page",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-user-yes"
-        ],
-        "quotes": [
-          "showcase their collections"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Profile page shows a grid of all items listed by that seller",
-        "Each item displays using the existing ItemCard component",
-        "Only active (non-deleted) listings are shown",
-        "Shows empty state message if seller has no listings",
-        "Items are clickable and navigate to item detail page"
-      ]
-    },
-    {
-      "id": "REQ-10",
-      "text": "Add backend query function to retrieve a user's public profile information by principal ID including their profile data and all their active listings",
+      "id": "REQ-26",
+      "text": "Create a backend Wand type with fields for id (Text), name (Text), owner (Principal), and createdAt (Int) timestamp",
       "target": "backend",
       "source": {
         "messageIds": [
-          "msg-user-yes"
+          "msg-last"
         ],
         "quotes": [
-          "sellers can showcase their collections"
+          "Can I please make an app where I can count my wands and name what wands I have"
         ]
       },
       "acceptanceCriteria": [
-        "Function accepts a Principal parameter for the target user",
-        "Returns user profile data (name, email, isSeller, createdAt)",
-        "Returns array of all active listings created by that user",
-        "Function is callable by any authenticated user (public profile view)",
-        "Returns appropriate error if user profile does not exist"
+        "Wand type is defined in backend/main.mo",
+        "Each wand has a unique id, name, owner principal, and creation timestamp",
+        "Wand type uses stable data structures for persistence"
       ]
     },
     {
-      "id": "REQ-11",
-      "text": "Add navigation links to seller profiles from item cards and item detail pages by making the seller name clickable",
-      "target": "frontend",
+      "id": "REQ-27",
+      "text": "Implement backend functions to create a new wand, retrieve all wands for a user, retrieve a specific wand by id, update a wand's name, and delete a wand",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-user-yes"
+          "msg-last"
         ],
         "quotes": [
-          "sellers can showcase their collections"
+          "Can I please make an app where I can count my wands and name what wands I have"
         ]
       },
       "acceptanceCriteria": [
-        "Seller name on ItemCard component links to seller's profile page",
-        "Seller info on ItemDetailPage links to seller's profile page",
-        "Links use the seller's principal ID in the route",
-        "Hover state indicates the name is clickable",
-        "Navigation works correctly from all pages"
+        "addWand function creates a wand with generated id and returns the wand",
+        "getMyWands function returns all wands owned by the caller",
+        "getWandById function returns a specific wand by id",
+        "updateWandName function allows owners to rename their wands",
+        "deleteWand function allows owners to remove their wands",
+        "All functions enforce ownership validation"
       ]
     },
     {
-      "id": "REQ-12",
-      "text": "Create a React Query hook for fetching user profile data with their listings and integrate it into the profile page component",
-      "target": "frontend",
+      "id": "REQ-28",
+      "text": "Create a backend Friendship type and implement friend request system with functions to send friend requests, accept requests, reject requests, get pending requests, and get confirmed friends list",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-user-yes"
+          "msg-last"
+        ],
+        "quotes": [
+          "be able to have friends and see there wands two"
         ]
       },
       "acceptanceCriteria": [
-        "Hook added to useQueries.ts following existing patterns",
-        "Handles loading, error, and success states",
-        "Profile page shows loading spinner while fetching",
-        "Displays error message if profile cannot be loaded",
-        "Data refreshes appropriately when navigating between profiles"
+        "Friendship type tracks requester, recipient, status (pending/accepted/rejected), and timestamp",
+        "sendFriendRequest function creates a pending friendship request",
+        "acceptFriendRequest function changes status to accepted",
+        "rejectFriendRequest function changes status to rejected",
+        "getPendingRequests returns requests where user is recipient and status is pending",
+        "getFriends returns list of users where friendship status is accepted",
+        "Prevents duplicate friend requests between same users"
       ]
     },
     {
-      "id": "REQ-13",
-      "text": "Add a 'View Profile' link or button in the Layout header navigation when user is authenticated that navigates to their own profile page",
-      "target": "frontend",
+      "id": "REQ-29",
+      "text": "Implement backend function to retrieve wands belonging to a friend, returning wands only if a confirmed friendship exists between the caller and the wand owner",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-user-yes"
+          "msg-last"
         ],
         "quotes": [
-          "User profile pages"
+          "be able to have friends and see there wands two"
         ]
       },
       "acceptanceCriteria": [
-        "Link appears in header navigation next to existing links",
-        "Only visible when user is logged in",
-        "Navigates to the authenticated user's profile page",
-        "Uses the current user's principal ID in the route",
-        "Maintains wizarding theme styling consistent with other nav links"
+        "getFriendWands function accepts a Principal parameter for the friend",
+        "Function returns wands only if caller and friend have accepted friendship",
+        "Returns empty array if no friendship exists or friendship is not accepted",
+        "Includes wand count for the friend"
+      ]
+    },
+    {
+      "id": "REQ-30",
+      "text": "Create a MyWandsPage component displaying the authenticated user's wand collection with wand count, list of wands showing names, and buttons to add new wands, edit wand names, and delete wands",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ],
+        "quotes": [
+          "Can I please make an app where I can count my wands and name what wands I have"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Page displays total wand count prominently",
+        "Each wand is displayed in a card or list item showing its name",
+        "Add Wand button opens a form or modal to create a new wand",
+        "Each wand has edit and delete buttons",
+        "Empty state message displayed when user has no wands",
+        "Uses React Query hooks for data fetching and mutations"
+      ]
+    },
+    {
+      "id": "REQ-31",
+      "text": "Create an AddWandForm component with a text input for wand name and submit button that calls the backend addWand function",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ],
+        "quotes": [
+          "name what wands I have"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Form includes a text input for wand name with validation",
+        "Submit button triggers addWand mutation",
+        "Success toast displayed after wand is created",
+        "Form resets after successful submission",
+        "Loading state shown during submission"
+      ]
+    },
+    {
+      "id": "REQ-32",
+      "text": "Create a FriendsPage component displaying the user's friends list, pending friend requests, and a section to search and send friend requests to other users by their username or userId",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ],
+        "quotes": [
+          "be able to have friends"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Page shows list of confirmed friends with their names and profile pictures",
+        "Pending friend requests section shows incoming requests with accept/reject buttons",
+        "Search or input field to find users and send friend requests",
+        "Each friend entry is clickable to view their wand collection",
+        "Uses React Query hooks for fetching friends and pending requests"
+      ]
+    },
+    {
+      "id": "REQ-33",
+      "text": "Create a FriendWandsPage component that displays a friend's wand collection including their wand count and list of wand names, accessible by clicking on a friend from the FriendsPage",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ],
+        "quotes": [
+          "see there wands two"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Page displays friend's name and total wand count",
+        "Shows list of friend's wands with names",
+        "Back button or link to return to friends list",
+        "Uses React Query hook to fetch friend's wands",
+        "Shows message if friend has no wands"
+      ]
+    },
+    {
+      "id": "REQ-34",
+      "text": "Update Layout component navigation to include links to My Wands and Friends pages, replacing or alongside existing marketplace navigation",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Navigation includes 'My Wands' link routing to MyWandsPage",
+        "Navigation includes 'Friends' link routing to FriendsPage",
+        "Links are visible when user is authenticated",
+        "Navigation maintains consistent styling with existing links"
+      ]
+    },
+    {
+      "id": "REQ-35",
+      "text": "Create React Query hooks for all wand-related operations (useMyWands, useAddWand, useUpdateWandName, useDeleteWand, useFriendWands) and friend-related operations (useFriends, usePendingRequests, useSendFriendRequest, useAcceptRequest, useRejectRequest)",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ]
+      },
+      "acceptanceCriteria": [
+        "All hooks use useActor to get backend actor instance",
+        "Mutations invalidate relevant queries on success",
+        "Hooks handle loading and error states",
+        "Success/error toasts displayed for mutations"
+      ]
+    },
+    {
+      "id": "REQ-36",
+      "text": "Update App.tsx to include routes for MyWandsPage (/my-wands), FriendsPage (/friends), and FriendWandsPage (/friends/:userId/wands)",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Routes are added to TanStack Router configuration",
+        "All routes are accessible when user is authenticated",
+        "FriendWandsPage route includes userId parameter"
+      ]
+    },
+    {
+      "id": "REQ-37",
+      "text": "Design a magical wand-themed visual style with mystical aesthetics including deep woods colors (oak browns, ebony blacks, mahogany reds), starlight accents, and elegant serif typography that evokes a wand collector's aesthetic throughout the application",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-last"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Color scheme uses warm wood tones and starlight accents",
+        "Typography uses elegant serif fonts for headings",
+        "Consistent theme applied across all new components",
+        "Visual style distinct from previous marketplace theme"
       ]
     }
   ],
   "constraints": [
-    "Do not modify existing authentication system or Internet Identity integration",
-    "Maintain single-actor backend architecture",
-    "Keep existing messaging and cart functionality unchanged",
-    "Profile pages must be publicly viewable by any authenticated user"
+    "Use single-actor architecture in backend/main.mo",
+    "Do not modify immutable frontend paths: frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useInternetIdentity.tsx, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, frontend/src/components/ui",
+    "Use React, Shadcn, Tailwind, and React Query for frontend",
+    "Use Motoko for backend",
+    "Use Internet Identity for authentication"
   ],
   "nonGoals": [
-    "Private profiles or visibility settings",
-    "Profile editing or settings page (separate from ProfileSetupModal)",
-    "Following or friending functionality",
-    "User ratings or reviews",
-    "Profile statistics or analytics"
+    "Marketplace functionality (item listings, shopping cart, checkout, messaging)",
+    "Payment processing",
+    "Real-time notifications",
+    "Mobile app version",
+    "Image uploads for wands",
+    "Wand rarity or magical properties system"
   ],
   "imageRequirements": {
-    "required": [],
+    "required": [
+      "Elegant crossed wands icon with starlight sparkles on dark wood background (wand-logo.dim_256x256.png)",
+      "Mystical wand collection hero banner with magical glow effects and dark atmospheric background (wand-hero.dim_1200x400.png)"
+    ],
     "edits": []
   }
 }
